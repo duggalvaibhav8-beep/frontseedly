@@ -8,4 +8,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm i 
-      - run: npm run dev
+      - run: npm i pm2 -g 
+      - run: pm2 start npm --name frontend -- run dev -- --host
