@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: npm i 
       - run: npm i pm2 -g 
-      - run: pm2.cmd start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
+      - run: pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
