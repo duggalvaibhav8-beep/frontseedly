@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: new-deployment
+  namespace: fronts
+  labels:
+    app: new
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: new
+  template:
+    metadata:
+      labels:
+        app: new
+    spec:
+      containers:
+      - name: new
+        image: vaibhavduggal/seedlyfront:latest
+        ports:
+        - containerPort: 5173
+
