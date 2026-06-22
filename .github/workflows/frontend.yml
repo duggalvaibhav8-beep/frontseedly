@@ -1,28 +1,44 @@
 name: Frontend Deploy
-on:
- push:
-  branches:
-           - main
-jobs:
-     deploy:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
-          
-            - name: Setup SSH
-              run: |
-                mkdir -p ~/.ssh
-                echo "${{ secrets.SECRET_KEY_ID }}" > ~/.ssh/id_rsa
-                chmod 600 ~/.ssh/id_rsa
-                ssh-keyscan -H ${{ secrets.AWS_SECRET_HOST }} >> ~/.ssh/known_hosts
 
-            - name: Deploy to EC2
-              run: |
-                ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_SECRET_HOST }} << 'EOF'
-                  cd /home/ubuntu/frontseedly
-                  git pull origin main
-                  npm install
-                  pm2 restart frontend || pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
-                  pm2 save
-                EOF
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          # Add SSH private key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add server to known hosts
+          ssh-keyscan -H "${{ secrets.AWS_SECRET_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_SECRET_HOST }} << 'EOF'
+
+            cd /home/ubuntu/frontseedly
+
+            echo "Pulling latest code..."
+            git pull origin main
+
+            echo "Installing dependencies..."
+            npm install
+
+            echo "Restarting PM2 process..."
+            pm2 restart frontend || pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
+
+            pm2 save
+
+          EOF
