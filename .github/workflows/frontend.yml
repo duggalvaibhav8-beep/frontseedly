@@ -1,4 +1,4 @@
-name: Frontend Deploy
+name: Deploy Node.js App
 
 on:
   push:
@@ -10,35 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-
-          # Add SSH private key
-          printf "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-          # Add server to known hosts
-          ssh-keyscan -H "${{ secrets.AWS_SECRET_HOST }}" >> ~/.ssh/known_hosts
-
       - name: Deploy to EC2
-        run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_SECRET_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.IP }}
+          username: karan
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/seedlyfrntd
 
-            cd /home/ubuntu/frontseedly
-
-            echo "Pulling latest code..."
             git pull origin main
 
-            echo "Installing dependencies..."
-            npm install
+            sudo npm install
 
-            echo "Restarting PM2 process..."
-            pm2 restart frontend || pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
+            sudo npm run build || true
 
-            pm2 save
+            sudo npm i pm2 -g
 
-          EOF
+            pm2 restart app || pm2 start npm --name "app" -- run dev
