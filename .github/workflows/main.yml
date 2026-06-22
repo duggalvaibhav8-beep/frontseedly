@@ -7,5 +7,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: npm i 
-      - run: pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
+      - run: npm install
+
+      - run: |
+              pm2 delete frontend || true
+              pm2 start npm --name frontend -- run dev -- --host 0.0.0.0 --port 5173
+              pm2 save
