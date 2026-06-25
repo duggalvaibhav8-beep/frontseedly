@@ -20,7 +20,7 @@ jobs:
           username: karan
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd /home/karan/seedlyfrntd
+            cd /home/karan/frontseedly
 
             git pull origin main
 
