@@ -30,5 +30,6 @@ jobs:
 
             sudo npm i pm2 -g
             sudo npm i http-server -g 
+            cd /home/karan/frontseedly/dist
 
             pm2 restart app || pm2 start http-server --name frontend -- -p 4200 -d false 
