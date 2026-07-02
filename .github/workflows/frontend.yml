@@ -24,10 +24,11 @@ jobs:
 
             git pull origin main
 
-            sudo npm install
+             npm install
 
-            sudo npm run build || true
+            npm run build || true
 
             sudo npm i pm2 -g
+            sudo npm i http-server -g 
 
-            pm2 restart app || pm2 start npm --name "app" -- run dev
+            pm2 restart app || pm2 start http-server --name frontend -- -p 4200 -d false 
