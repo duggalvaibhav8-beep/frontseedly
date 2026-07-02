@@ -29,7 +29,5 @@ jobs:
             npm run build || true
 
             sudo npm i pm2 -g
-            sudo npm i http-server -g 
-            cd /home/karan/frontseedly/dist
-
-            pm2 restart app || pm2 start http-server --name frontend -- -p 4200 -d false 
+            sudo npm i http-server -g
+            pm2 restart app || pm2 start npm --name front -- run dev -- --host
