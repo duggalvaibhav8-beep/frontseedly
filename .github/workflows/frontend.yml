@@ -17,10 +17,10 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.IP }}
-          username: karan
+          username: ubuntu
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            cd /home/karan/frontseedly
+            cd /home/ubuntu/frontseedly
 
             git pull origin main
              npm install
